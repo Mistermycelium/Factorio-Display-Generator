@@ -58,7 +58,7 @@ class DisplayPanel {
 
 // We guard against bad fonts here. TODO: Guard against bad item IDs and colors
 if (!fonts.includes(font)) {
-  throw new Error(`invalid font. valid fonts are: ${fonts}`);
+  throw new Error(`Invalid font. Valid fonts are: ${fonts}`);
 }
 
 const plan = createEmptyBlueprint()
