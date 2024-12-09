@@ -1,5 +1,5 @@
-export default {
-  fonts: [
+
+  const fonts= [
   "compi",
   "count-font",
   "default",
@@ -23,4 +23,4 @@ export default {
   "technology-slot-level-font",
   "var"
   ]
-}
+export {fonts}

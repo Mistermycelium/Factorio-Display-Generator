@@ -6,14 +6,14 @@ import progressBar from './progressbar.js'
 
 import lily from '@jcubic/lily'
 
-import fonts from './fonts.js'
+import {fonts} from './fonts.js'
 
 const options = lily(process.argv.slice(2), {boolean: ['b']});
 
 
 const color = options.color || 'orange'
 const item = options.item || 'automation-science-pack'
-const font = fonts[2]
+const font = options.font || fonts[2]
 
 class Condition {
   constructor(item, constant) {
@@ -54,6 +54,11 @@ class DisplayPanel {
     this.icon = {name:item}
     this.always_show = true
   }
+}
+
+// We guard against bad fonts here. TODO: Guard against bad item IDs and colors
+if (!fonts.includes(font)) {
+  throw new Error(`invalid font. valid fonts are: ${fonts}`);
 }
 
 const plan = createEmptyBlueprint()
