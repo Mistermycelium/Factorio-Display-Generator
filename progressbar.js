@@ -1,4 +1,4 @@
-export default function progressBar(value, item, color='#4287f5', font='technology-slot-level-font') {
+export default function progressBar(value, item, color, font) {
   const max = 100;
   const progress = Math.min(Math.max(value, 0), max);
   const percent = Math.round((progress / max) * 100);
