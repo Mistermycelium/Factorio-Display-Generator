@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-import { encodePlan, addEntity, createEmptyBlueprint } from '@jensforstmann/factorio-blueprint-tools';
+import { encodePlan, addEntity, createEmptyBlueprint, decodePlan } from '@jensforstmann/factorio-blueprint-tools';
 
 import progressBar from './progressbar.js'
 
@@ -10,14 +10,14 @@ import {fonts} from './fonts.js'
 
 const options = lily(process.argv.slice(2), {boolean: ['b']});
 
-
+const type = options.type || 'item'
 const color = options.color || 'orange'
 const item = options.item || 'automation-science-pack'
 const font = options.font || fonts[2]
 
 class Condition {
-  constructor(item, constant) {
-    this.first_signal = {name: item}
+  constructor(item, constant, type) {
+    this.first_signal = {type: type, name: item}
     this.constant = constant
     if (constant == 100) {
       this.comparator = '≥'
@@ -28,9 +28,9 @@ class Condition {
 }
 
 class Parameter {
-  constructor(item, constant, text) {
-    this.condition = new Condition(item, constant)
-    this.icon = {name: item}
+  constructor(item, constant, text, type) {
+    this.condition = new Condition(item, constant, type)
+    this.icon = {type: type, name: item}
     this.text = text
   }
 }
@@ -43,15 +43,15 @@ class DisplayPanel {
     let params = []
     for (let i = 0; i <= 100; i++) {
       if (i == 49) {continue}
-      let text = progressBar(i, item, color, font);
-      let param = new Parameter(item, i, text)
+      let text = progressBar(i, item, color, font, type);
+      let param = new Parameter(item, i, text, type)
       params.push(param)
     };
     this.control_behavior = {
       "parameters" : params
     }
-    this.text = progressBar(0,item,color, font)
-    this.icon = {name:item}
+    this.text = progressBar(0, item, color, font, type)
+    this.icon = {type:type, name:item}
     this.always_show = true
   }
 }
@@ -61,8 +61,16 @@ if (!fonts.includes(font)) {
   throw new Error(`Invalid font. Valid fonts are: ${fonts}`);
 }
 
+
+if (options.string) {
+  const outplan = JSON.stringify(decodePlan(options.string))
+  console.log(outplan)
+fs.writeFile('output.json',outplan, { encoding: 'utf8' }, (err) => {
+  if (err) throw err;});
+}
+
 const plan = createEmptyBlueprint()
-plan.blueprint.label = `[color=${color}][item=${item}] Display[/color]`;
+plan.blueprint.label = `[color=${color}][${type}=${item}] Display[/color]`;
 plan.blueprint.icons = [
   {
     signal: {
@@ -72,6 +80,7 @@ plan.blueprint.icons = [
   },
   {
     signal: {
+      type: type,
       name: item
     },
     index: 1

@@ -1,4 +1,4 @@
-export default function progressBar(value, item, color, font) {
+export default function progressBar(value, item, color, font, type) {
   const max = 100;
   const progress = Math.min(Math.max(value, 0), max);
   const percent = Math.round((progress / max) * 100);
@@ -45,7 +45,7 @@ export default function progressBar(value, item, color, font) {
     head += `[color=${color}]`
     tail = `[/color]${tail}`
   }
-  head += `[item=${item}]`
+  head += `[${type}=${item}]`
 
   const progressBarString = `${head} ${progressBar} ${tail}`;
   return (progressBarString);
